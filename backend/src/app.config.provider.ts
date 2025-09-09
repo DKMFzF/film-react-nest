@@ -1,22 +1,21 @@
-
-import { ConfigService } from "@nestjs/config";
+import { ConfigModule } from '@nestjs/config';
 
 export const configProvider = {
-    provide: 'CONFIG',
-    useFactory: (configService: ConfigService) => ({
-        database: {
-            driver: configService.get<string>('DATABASE_DRIVER'),
-            url: configService.get<string>('MONGODB_URI'),
-        },
-    }),
-    inject: [ConfigService],
+  imports: [ConfigModule.forRoot()],
+  provide: 'CONFIG',
+  useValue: {
+    database: {
+      driver: process.env.DATABASE_DRIVER || 'postgres',
+      url: process.env.DATABASE_URL || 'postgresql://localhost:5432/film_nest',
+    },
+  },
 };
 
 export interface AppConfig {
-    database: AppConfigDatabase
+  database: AppConfigDatabase;
 }
 
 export interface AppConfigDatabase {
-    driver: string
-    url: string
+  driver: string;
+  url: string;
 }
