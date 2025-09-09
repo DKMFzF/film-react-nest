@@ -4,11 +4,11 @@ import { Type } from 'class-transformer';
 export class TicketDto {
   @IsString()
   @IsNotEmpty()
-  film: string; // id фильма
+  film: string;
 
   @IsString()
   @IsNotEmpty()
-  session: string; // id сеанса
+  session: string;
 
   @IsString()
   @IsNotEmpty()
