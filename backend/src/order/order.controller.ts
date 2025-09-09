@@ -1,19 +1,14 @@
-import { Controller, Post, Body, Res, HttpStatus } from '@nestjs/common';
+import { Body, Controller, Post } from '@nestjs/common';
+import { CreateOrderDto } from './dto/order.dto';
 import { OrderService } from './order.service';
-import { OrderDto } from './dto/order.dto';
-import { Response } from 'express';
 
 @Controller('order')
 export class OrderController {
   constructor(private readonly orderService: OrderService) {}
 
   @Post()
-  async createOrder(@Body() orderDto: OrderDto, @Res() res: Response) {
-    try {
-      const result = await this.orderService.bookSeats(orderDto);
-      return res.status(HttpStatus.CREATED).json(result);
-    } catch (error) {
-      return res.status(error.status || HttpStatus.BAD_REQUEST).json({ message: error.message });
-    }
+  async createOrder(@Body() createOrderDto: CreateOrderDto) {
+    const order = await this.orderService.createOrder(createOrderDto);
+    return { items: order.tickets };
   }
 }
