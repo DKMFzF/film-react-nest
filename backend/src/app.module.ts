@@ -35,7 +35,7 @@ import { OrdersRepository } from './repository/order.repository';
         if (driver === 'postgres') {
           return {
             type: 'postgres',
-            host: configService.get('DATABASE_HOST', 'localhost'),
+            host: configService.get('DATABASE_HOST', 'postgres'),
             port: parseInt(configService.get('DATABASE_PORT', '5432')),
             username: configService.get('DATABASE_USERNAME', 'postgres'),
             password: configService.get('DATABASE_PASSWORD', 'postgres'),
