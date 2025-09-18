@@ -10,7 +10,6 @@ async function bootstrap() {
     bufferLogs: true,
   });
 
-  // Выбор логгера
   const loggerType = process.env.LOGGER_TYPE || 'dev';
   let logger;
   switch (loggerType) {
