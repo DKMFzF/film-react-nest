@@ -3,6 +3,7 @@ services:
     build:
       context: ./backend
       dockerfile: Dockerfile
+    image: ghcr.io/dkmfzf/film-react-nest/film-react-nest-backend:latest
     container_name: film_backend
     restart: always
     env_file:
@@ -38,6 +39,7 @@ services:
     build:
       context: ./frontend
       dockerfile: Dockerfile
+    image: ghcr.io/dkmfzf/film-react-nest/film-react-nest-frontend:latest
     volumes:
       - frontend_build:/app/dist
     restart: always
@@ -48,6 +50,7 @@ services:
     build:
       context: ./nginx
       dockerfile: Dockerfile
+    image: ghcr.io/dkmfzf/film-react-nest/film-react-nest-nginx:latest
     ports:
       - "80:80"
     volumes:
