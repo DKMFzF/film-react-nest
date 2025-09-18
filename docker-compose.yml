@@ -1,0 +1,89 @@
+services:
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    image: ghcr.io/dkmfzf/film-react-nest/film-react-nest-backend:latest
+    container_name: film_backend
+    restart: always
+    env_file:
+      - ./backend/.env
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./backend/public:/app/public
+    networks:
+      - backend-network
+    depends_on:
+      - postgres
+
+  postgres:
+    image: postgres:15-alpine
+    container_name: film_postgres
+    restart: always
+    environment:
+      POSTGRES_DB: film_db
+      POSTGRES_USER: film_user
+      POSTGRES_PASSWORD: film_pass
+    volumes:
+      - postgres__data:/var/lib/postgresql/data
+    networks:
+      - backend-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U film_user -d film_db"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    image: ghcr.io/dkmfzf/film-react-nest/film-react-nest-frontend:latest
+    volumes:
+      - frontend_build:/app/dist
+    restart: always
+    networks:
+      - backend-network 
+
+  nginx:
+    build:
+      context: ./nginx
+      dockerfile: Dockerfile
+    image: ghcr.io/dkmfzf/film-react-nest/film-react-nest-nginx:latest
+    ports:
+      - "80:80"
+    volumes:
+      - frontend_build:/usr/share/nginx/html
+      - ./backend/public:/app/public
+    depends_on:
+      - frontend
+      - backend
+    networks:
+      - backend-network
+    restart: always
+
+  pgadmin:
+    image: dpage/pgadmin4
+    container_name: film_pgadmin
+    restart: always
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@example.com
+      PGADMIN_DEFAULT_PASSWORD: admin
+    ports:
+      - "8080:80"
+    volumes:
+      - pgadmin_data:/var/lib/pgadmin
+    depends_on:
+      - postgres
+    networks:
+      - backend-network
+
+volumes:
+  postgres__data:
+  pgadmin_data:
+  frontend_build:
+
+networks:
+  backend-network:
+    driver: bridge
