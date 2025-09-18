@@ -1,19 +1,35 @@
-import { IsString, IsArray, IsNumber, IsNotEmpty } from 'class-validator';
+import { IsString, IsArray, IsNotEmpty, ValidateNested } from 'class-validator';
+import { Type } from 'class-transformer';
 
-export class OrderDto {
+export class TicketDto {
   @IsString()
   @IsNotEmpty()
-  filmId: string;
+  film: string;
 
   @IsString()
   @IsNotEmpty()
-  scheduleId: string;
+  session: string;
+
+  @IsString()
+  @IsNotEmpty()
+  row: string;
+
+  @IsString()
+  @IsNotEmpty()
+  seat: string;
+}
+
+export class CreateOrderDto {
+  @IsString()
+  @IsNotEmpty()
+  email: string;
+
+  @IsString()
+  @IsNotEmpty()
+  phone: string;
 
   @IsArray()
-  @IsString({ each: true })
-  seats: string[];
-
-  @IsNumber()
-  @IsNotEmpty()
-  totalPrice: number;
+  @ValidateNested({ each: true })
+  @Type(() => TicketDto)
+  tickets: TicketDto[];
 }
